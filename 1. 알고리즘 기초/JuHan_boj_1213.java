@@ -27,7 +27,6 @@ public class Main {
 
     // 팰린드롬을 만드는게 가능한 문자열인지 반환하는 함수
     static boolean isPossible(String str){
-        int flag = 0;
         int len = str.length();
 
         // str 의 길이가 짝수일 때와 홀수일 때를 나눈다
@@ -62,6 +61,7 @@ public class Main {
         }
     }
 
+    // 팰린드롬을 출력해주느 함수
     static void printPalindrome(String str){
         int oddIdx = -1;
         StringBuilder sb = new StringBuilder();
