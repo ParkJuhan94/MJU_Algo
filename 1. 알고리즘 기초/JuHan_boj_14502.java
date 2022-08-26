@@ -1,4 +1,3 @@
-
 package WEEK00.P14502;
 
 import java.io.BufferedReader;
@@ -76,7 +75,30 @@ public class Main {
         }
 
         while(!Q.isEmpty()){
+            Node n = Q.poll();
 
+            for(int i = 0; i < 4; i++){
+                int tx = n.x + dx[i];
+                int ty = n.y + dy[i];
+
+                if(0 <= tx && tx < N && 0 <= ty && ty < M
+                        && map[tx][ty] != 2){
+                    map[tx][ty] = 2;
+                    Q.add(new Node(tx, ty));
+                }
+            }
+        }
+
+        int cnt = 0;
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++){
+                if(map[i][j] == 0){
+                    cnt++;
+                }
+            }
+        }
+        if(cnt > max){
+            max = cnt;
         }
     }
 
