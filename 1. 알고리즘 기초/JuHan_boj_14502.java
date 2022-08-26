@@ -15,7 +15,7 @@ N 제한이 8 : 매우 작은 수
  */
 public class Main {
     static int N, M;
-    static int[][] map;
+    static int[][] map, copyMap;
     static int[][] ch;
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
@@ -52,6 +52,8 @@ public class Main {
         }else{
             for(int i = 0; i < N; i++){
                 for(int j = 0; j < M; j++){
+                    // map[i][j] 에 1을 넣고 DFS 돌렸다가 나오면서 0으로 원상복귀
+                    // i와 j가 일정하게 증가만 하니까 ch 배열이 필요 없음. 어차피 재방문 안함.
                     if(map[i][j] == 0){
                         map[i][j] = 1;
                         DFS(cnt + 1);
@@ -74,6 +76,18 @@ public class Main {
             }
         }
 
+        // 이렇게 깊은 복사를 해버리면 원본 map 이 바뀐다.
+        // copyMap = map;
+        // 벽의 위치가 바뀌면 바이러스를 초기화 시켜야하니까, BFS() 한 번 마다 새로운 copyMap 을 쓴다.
+
+        copyMap = new int[N][M];
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++){
+                copyMap[i][j] = map[i][j];
+            }
+        }
+
+        // 원본 map 을 건드리지 않고 copyMap 에서만 바이러스 뿌리고, 정답 처리한다.
         while(!Q.isEmpty()){
             Node n = Q.poll();
 
@@ -82,17 +96,18 @@ public class Main {
                 int ty = n.y + dy[i];
 
                 if(0 <= tx && tx < N && 0 <= ty && ty < M
-                        && map[tx][ty] != 2){
-                    map[tx][ty] = 2;
+                        && copyMap[tx][ty] == 0){
+                    copyMap[tx][ty] = 2;
                     Q.add(new Node(tx, ty));
                 }
             }
         }
 
+        // 정답 처리
         int cnt = 0;
         for(int i = 0; i < N; i++){
             for(int j = 0; j < M; j++){
-                if(map[i][j] == 0){
+                if(copyMap[i][j] == 0){
                     cnt++;
                 }
             }
