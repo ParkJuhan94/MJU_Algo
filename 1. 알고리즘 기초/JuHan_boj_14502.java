@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 
 /*
 N 제한이 8 : 매우 작은 수
-3개의 벽을 세우는 모든 경우의 수 -> DFS
+3개의 벽을 세우는 모든 경우의 수 -> 완전탐색 (브루트포스)
 벽을 만든 후 바이러스를 퍼트린다 -> BFS : 인접한 다른 정점으로 갈때 가중치가 1
  */
 public class Main {
@@ -39,12 +39,12 @@ public class Main {
             }
         }
 
-        DFS(0);
+        search(0);
 
         System.out.println(max);
     }
 
-    static void DFS(int cnt){
+    static void search(int cnt){
         // 벽 3개 세우고나서 BFS() 호출
         if(cnt == 3){
             BFS();
@@ -56,7 +56,7 @@ public class Main {
                     // i와 j가 일정하게 증가만 하니까 ch 배열이 필요 없음. 어차피 재방문 안함.
                     if(map[i][j] == 0){
                         map[i][j] = 1;
-                        DFS(cnt + 1);
+                        search(cnt + 1);
                         map[i][j] = 0;
                     }
                 }
