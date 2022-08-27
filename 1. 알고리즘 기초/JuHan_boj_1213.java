@@ -61,7 +61,7 @@ public class Main {
         }
     }
 
-    // 팰린드롬을 출력해주느 함수
+    // 팰린드롬을 출력해주는 함수
     static void printPalindrome(String str){
         int oddIdx = -1;
         StringBuilder sb = new StringBuilder();
