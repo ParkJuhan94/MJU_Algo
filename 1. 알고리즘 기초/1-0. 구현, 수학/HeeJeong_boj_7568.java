@@ -1,11 +1,14 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        Scanner scan = new Scanner(System.in);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N = scan.nextInt();
+        int N = Integer.parseInt(br.readLine());
 
         int[][] arr = new int[N][2];        // N행 2열 생성
 
@@ -14,6 +17,8 @@ public class Main {
             arr[i][1] = scan.nextInt();         //키
         }
 
+         StringBuilder sb = new StringBuilder();         //출력 셋팅
+        
         for(int i=0; i <N; i++) {
             int rank = 1;
 
@@ -23,6 +28,8 @@ public class Main {
                     rank++;
                 }
             }
-            System.out.print(rank+" ");}
+            sb.append(rank).append(' ');
+        }
+        System.out.println(sb);
     }
 }
