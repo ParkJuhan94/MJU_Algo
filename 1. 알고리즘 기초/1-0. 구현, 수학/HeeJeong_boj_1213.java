@@ -12,6 +12,8 @@ public class Main {
             alp[input.charAt(i)-'A']++;      //아스키 코드를 사용하여 해당 알파벳 위치 ++
         }
 
+        //알파벳 갯수 중 홀수가 있다면 가운데 위치하는 것만 가능
+        int center=0;
         //홀수의 갯수 세기
         int odd=0;
         for(int i=0; i<alp.length; i++){
@@ -21,8 +23,7 @@ public class Main {
             }
         }
       
-        //알파벳 갯수 중 홀수가 있다면 가운데 위치하는 것만 가능
-        int center=0;
+     
 
         if(odd>1 || (odd==1 && size%2==0)) {              //홀수가 1개보다 많다면 만들 수 없다.
             System.out.println("I'm Sorry Hansoo");
