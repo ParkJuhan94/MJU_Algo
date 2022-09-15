@@ -35,6 +35,7 @@ public class Main {
             }
         }
         
+        // 사전순으로 정렬
         Collections.sort(arr);
 
 
