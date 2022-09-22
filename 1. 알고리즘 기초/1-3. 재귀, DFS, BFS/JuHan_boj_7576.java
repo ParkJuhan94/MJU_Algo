@@ -10,11 +10,12 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N, M, res;
-    static boolean allAgedTomato;
+    static int N, M, res, cnt, loopCnt;
+    static boolean allAgedTomato, cantAllAged;
     static int[][] map, ch;             // 빈칸의 좌표를 ch[][]에 1로 저장
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
+    static ArrayList<Integer> numAgedTomato;
     static Queue<Point> Q;              // 익은 토마토의(퍼뜨릴) 좌표를 담는 배열
 
     public static void main(String[] args) throws IOException {
@@ -25,14 +26,24 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        map = new int[N][M];
-        ch = new int[N][M];
+        numAgedTomato = new ArrayList<>();
+        map = new int[M][N];
+        ch = new int[M][N];
+        res = 0;
+        cnt = 0;
+        loopCnt = 0;
         allAgedTomato = true;
+        cantAllAged = false;
 
-        for(int i = 0; i < N; i++){
+        for(int i = 0; i < M; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j = 0; j < M; j++){
+            for(int j = 0; j < N; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
+
+                // 익은 토마토의 수 카운팅
+                if(map[i][j] == 1){
+                    cnt++;
+                }
 
                 // 빈칸일 때
                 if(map[i][j] == -1) {
@@ -45,6 +56,7 @@ public class Main {
                 }
             }
         }
+        numAgedTomato.add(cnt);
 
         if(allAgedTomato == true){
             System.out.println(0);
@@ -52,14 +64,25 @@ public class Main {
 
         BFS();
 
+        // 토마토가 모두 익지는 못하는 상황이면
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                if(map[i][j] == 0){
+                    cantAllAged = true;
+                    System.out.println(-1);
+                    return;
+                }
+            }
+        }
+
         System.out.println(res);
     }
 
     static void BFS(){
         Q = new LinkedList<>();
 
-        for(int i = 0; i < N; i++){
-            for(int j = 0; j < M; j++){
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
                 if(map[i][j] == 1)          // 토마토일 때
                 {
                     Q.add(new Point(i, j));
@@ -69,6 +92,8 @@ public class Main {
 
         while(!Q.isEmpty()){
             Point head = Q.poll();
+            loopCnt++;
+            int addTomato = 0;
 
             // 익은 토마토의 상하좌우 탐색
             for(int i = 0; i < 4; i++){
@@ -79,10 +104,17 @@ public class Main {
                 if(0 <= tx && tx < N && 0 <= ty && ty < M
                         && ch[tx][ty] == 0){
                     Q.add(new Point(tx, ty));
+                    map[tx][ty] = 1;
+                    addTomato++;
                 }
+
+                // 한 루프 돌 때마다 익은 토마토가 몇 개 추가되는지 저장
+                numAgedTomato.add(addTomato);
             }
 
-
+            if(loopCnt == numAgedTomato.get(res)){
+                res++;
+            }
         }
     }
 }
