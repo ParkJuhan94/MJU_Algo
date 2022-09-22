@@ -26,6 +26,7 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        Q = new LinkedList<>();
         numAgedTomato = new ArrayList<>();
         map = new int[M][N];
         ch = new int[M][N];
@@ -42,6 +43,7 @@ public class Main {
 
                 // 익은 토마토의 수 카운팅
                 if(map[i][j] == 1){
+                    Q.add(new Point(i, j));
                     cnt++;
                 }
 
@@ -56,13 +58,22 @@ public class Main {
                 }
             }
         }
+
         numAgedTomato.add(cnt);
 
         if(allAgedTomato == true){
             System.out.println(0);
+            return;
         }
 
         BFS();
+
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                System.out.print(map[i][j] + " ");
+            }
+            System.out.println();
+        }
 
         // 토마토가 모두 익지는 못하는 상황이면
         for(int i = 0; i < M; i++){
@@ -79,16 +90,6 @@ public class Main {
     }
 
     static void BFS(){
-        Q = new LinkedList<>();
-
-        for(int i = 0; i < M; i++){
-            for(int j = 0; j < N; j++){
-                if(map[i][j] == 1)          // 토마토일 때
-                {
-                    Q.add(new Point(i, j));
-                }
-            }
-        }
 
         while(!Q.isEmpty()){
             Point head = Q.poll();
@@ -103,6 +104,7 @@ public class Main {
                 // 퍼뜨릴 조건
                 if(0 <= tx && tx < N && 0 <= ty && ty < M
                         && ch[tx][ty] == 0){
+                    // 퍼뜨린다.
                     Q.add(new Point(tx, ty));
                     map[tx][ty] = 1;
                     addTomato++;
@@ -114,6 +116,7 @@ public class Main {
 
             if(loopCnt == numAgedTomato.get(res)){
                 res++;
+                loopCnt = 0;
             }
         }
     }
