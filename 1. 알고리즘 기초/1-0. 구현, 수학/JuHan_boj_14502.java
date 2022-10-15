@@ -16,7 +16,6 @@ N 제한이 8 : 매우 작은 수
 public class Main {
     static int N, M;
     static int[][] map, copyMap;
-    static int[][] ch;
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
     static int max = 0;
@@ -30,7 +29,6 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         map = new int[N][M];
-        ch = new int[N][M];
 
         for(int i = 0; i < N; i++){
             st = new StringTokenizer(br.readLine());
@@ -44,6 +42,7 @@ public class Main {
         System.out.println(max);
     }
 
+    // 3개의 벽을 세우는 함수
     static void search(int cnt){
         // 벽 3개 세우고나서 BFS() 호출
         if(cnt == 3){
@@ -52,8 +51,7 @@ public class Main {
         }else{
             for(int i = 0; i < N; i++){
                 for(int j = 0; j < M; j++){
-                    // map[i][j] 에 1을 넣고 DFS 돌렸다가 나오면서 0으로 원상복귀
-                    // i와 j가 일정하게 증가만 하니까 ch 배열이 필요 없음. 어차피 재방문 안함.
+                    // i와 j가 1씩 증가만 하니까 ch 배열이 필요 없음. 어차피 재방문 안함.
                     if(map[i][j] == 0){
                         map[i][j] = 1;
                         search(cnt + 1);
@@ -64,6 +62,7 @@ public class Main {
         }
     }
 
+    // 바이러스를 퍼트리는 함수
     static void BFS(){
         Queue<Node> Q = new LinkedList<>();
 
@@ -76,10 +75,8 @@ public class Main {
             }
         }
 
-        // 이렇게 깊은 복사를 해버리면 원본 map 이 바뀐다.
-        // copyMap = map;
+        // copyMap = map;   -->  이렇게 깊은 복사를 해버리면 원본 map 이 바뀐다.
         // 벽의 위치가 바뀌면 바이러스를 초기화 시켜야하니까, BFS() 한 번 마다 새로운 copyMap 을 쓴다.
-
         copyMap = new int[N][M];
         for(int i = 0; i < N; i++){
             for(int j = 0; j < M; j++){
@@ -103,7 +100,7 @@ public class Main {
             }
         }
 
-        // 정답 처리
+        // 정답 처리 : 안전 영역의 최대 개수
         int cnt = 0;
         for(int i = 0; i < N; i++){
             for(int j = 0; j < M; j++){
@@ -121,7 +118,6 @@ public class Main {
     static class Node {
         int x;
         int y;
-
         Node(int x, int y){
             this.x = x;
             this.y = y;
