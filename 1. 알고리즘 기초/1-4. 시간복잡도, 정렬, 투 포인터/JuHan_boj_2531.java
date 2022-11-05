@@ -11,9 +11,8 @@ public class Main {
     static int numSushi;
     static int numPick;
     static int coupon;
-    static int min, max;     // 뽑는 조합 중에서, 쿠폰 스시가 포함된 개수의 최솟값
-    static int[] sushi;
-    static Queue<Integer> picked;
+    static int p1, p2, max;
+    static int[] sushi, picked;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("src/WEEK08/P2531/input.txt"));
@@ -24,68 +23,53 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         numSushi = Integer.parseInt(st.nextToken());
         numPick = Integer.parseInt(st.nextToken());
-        coupon = Integer.parseInt(st.nextToken());
-        min = 0;
+        coupon = Integer.parseInt(st.nextToken()) - 1;
         max = 0;
+        p1 = 0;
+        p2 = numPick - 1;
         sushi = new int[N];                 // 회전벨트 전체
-        picked = new LinkedList<>();        // 접시
+        picked = new int[numSushi];         // 현재 접시의 스시 카운팅
 
+        // 인덱스의 차이때문에 스시 번호를 1 낮추어서 0부터 시작하도록 맞춤
         for(int i = 0; i < N; i++){
-            sushi[i] = Integer.parseInt(br.readLine());
-            if(i < numPick){
-                picked.add(sushi[i]);
+            sushi[i] = Integer.parseInt(br.readLine()) - 1;
+        }
 
-                // 쿠폰스시의 초기값
-                if(sushi[i] == coupon){
-                    min++;
-                    max++;
+        // 젤 처음 접시 셋팅
+        for(int i = 0; i < numPick; i++){
+            picked[sushi[i]]++;
+            if(picked[sushi[i]] == 1){
+                max++;
+            }
+        }
+        // 쿠폰 처리
+        if(picked[coupon] == 0){
+            max++;
+        }
+
+        // 벨트 전체 탐색
+        for(int i = 0; i < N; i++){
+            // 슬라이드 윈도우로 탐색횟수 줄임
+            picked[sushi[p1++]]--;
+            picked[sushi[++p2 % N]]++;
+
+            // 스시 카운팅
+            int cnt = 0;
+            for(int j = 0; j < numSushi; j++){
+                if(picked[j] >= 1){
+                    cnt++;
                 }
             }
-        }
-
-        // 확인용
-        for(int i = numPick; i < N; i++){
-            Iterator iter = picked.iterator();
-            while(iter.hasNext()){
-                System.out.print(iter.next() + " -> ");
+            // 쿠폰 처리
+            if(picked[coupon] == 0){
+                cnt++;
             }
-            System.out.println("END");
-
-            picked.poll();
-            picked.add(sushi[i]);
-        }
-        Iterator iter = picked.iterator();
-        while(iter.hasNext()){
-            System.out.print(iter.next() + " -> ");
-        }
-            System.out.println("END");
-
-        int tempMin = min;
-        int tempMax = max;
-        for(int i = numPick; i < N; i++){
-            if(picked.poll() == coupon){        // 빼기
-                tempMin--;
-                tempMax--;
-            }
-            if(sushi[i] == coupon){             // 더하기
-                tempMin++;
-                tempMax++;
-            }
-            picked.add(sushi[i]);
-
-            if(tempMin < min){
-                min = tempMin;
-            }
-            if(tempMax < max){
-                max = tempMax;
+            // 최댓값 갱신
+            if(cnt > max){
+                max = cnt;
             }
         }
 
-        if(tempMin == 0){
-            System.out.println(numPick + 1);
-        } else {
-            System.out.println(numPick - tempMax);
-        }
+        System.out.println(max);
     }
-
 }
