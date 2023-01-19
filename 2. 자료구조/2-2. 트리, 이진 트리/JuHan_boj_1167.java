@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N, max;
+    static int N, res, max, farNode;
+    static ArrayList<Integer> sideNodes;
     static ArrayList<Node>[] adj;
     static boolean[] visited;
-    static ArrayList<Integer> leaf;
 
     public static void main(String[] args) throws IOException {
         System.setIn(new FileInputStream("src/WEEK17/P1167/input.txt"));
@@ -20,9 +20,10 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
+        res = 0;
         max = 0;
         adj = new ArrayList[N + 1];
-        leaf = new ArrayList<>();
+        sideNodes = new ArrayList<>();
 
         for(int i = 1; i <= N; i++){
             adj[i] = new ArrayList<>();
@@ -40,45 +41,37 @@ public class Main {
                 int c = Integer.parseInt(st.nextToken());
 
                 adj[a].add(new Node(b, c));
-                //adj[b].add(new Node(a, c));   이 문제에서는 넣으면 중복됨
+                //adj[b].add(new Node(a, c));   //이 문제에서는 넣으면 중복됨
             }
         }
 
-//        for(int i = 1; i <= N; i++){
-//            System.out.print(i + " : ");
-//            System.out.println(adj[i]);
-//        }
+        // 단 두 번의 탐색으로 지름 찾기 가능
+        // 1. 임의의 한 점으로부터 가장 먼 거리의 점 찾기
+        visited = new boolean[N + 1];
+        search(1, 1, 0);
+        sideNodes.add(farNode);
 
-        // 리프노드 구하기 : 연결 간선이 하나 뿐인 노드
-        // 루트노드가 없다 !!
-        for(int i = 1; i <= N; i++){
-            if(adj[i].size() == 1){
-                leaf.add(i);
-            }
-        }
+        max = 0;
+        // 2. 그 점으로부터 또, 가장 먼 거리의 점 찾기
+        visited = new boolean[N + 1];
+        search(farNode, farNode, 0);
+        sideNodes.add(farNode);
 
-//        //리프노드 확인
-//        for(int i = 0; i < leaf.size(); i++){
-//            System.out.print(leaf.get(i) + " ");
-//        }
-//        System.out.println();
+        // 3. 두 점을 이으면 트리의 지름
+        visited = new boolean[N + 1];
+        res = search2(sideNodes.get(0), sideNodes.get(0), sideNodes.get(1), 0);
 
-        // 노드끼리의 거리 구하기 : 리프노드 각각을 시작점으로 해서 search 반복하기!!
-        // 리프노드가 시작점이 되어야만 가장 큰 루트 가능하니까
-        for(int i = 0; i < leaf.size(); i++){
-            visited = new boolean[N + 1];
-            visited[leaf.get(i)] = true;
-            search(leaf.get(i), leaf.get(i),0);
-        }
-
-        System.out.println(max);
+        System.out.println(res);
     }
 
     static void search(int start, int cur, int sum){
         //System.out.println("cur : " + cur + ", sum : " + sum);
 
         if(adj[cur].size() == 1 && cur != start){     // 리프노드라면
-            if(sum > max){ max = sum; }
+            if(sum > max){
+                max = sum;
+                farNode = cur;
+            }
             return;
         }
 
@@ -88,9 +81,25 @@ public class Main {
             if(!visited[nextNode.idx]) {
                 visited[nextNode.idx] = true;
                 search(start, nextNode.idx, sum + nextNode.weight);
-                //visited[nextNode.idx] = false;    // 재방문하지 않도록 false 하지 않는다.
             }
         }
+    }
+
+    static int search2(int start, int cur, int target, int sum){
+        if(adj[cur].size() == 1 && cur != start && cur == target){
+            return sum;
+        }
+
+        for(int i = 0; i < adj[cur].size(); i++){
+            Node nextNode = adj[cur].get(i);
+
+            if(!visited[nextNode.idx]) {
+                visited[nextNode.idx] = true;
+                search(start, nextNode.idx, sum + nextNode.weight);
+            }
+        }
+
+        return 0;
     }
 
     static class Node {
